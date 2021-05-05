@@ -8,6 +8,8 @@ OS=$(uname -s)
 
 if [ "$OS" = "Darwin" ]; then
     DIR_OS="MacOS"
+elif [[ "$OS" = "MINGW"* ]]; then
+    DIR_OS="Windows"
 else
     DIR_OS="Linux"
 fi
@@ -19,4 +21,4 @@ elif [[ "$*" == *"--android"* ]]; then
 fi
 
 #requires python3.6 or higher
-python3 $DIR/tools/ci_build/build.py --build_dir $DIR/build/$DIR_OS "$@"
+python $DIR/tools/ci_build/build.py --build_dir $DIR/build/$DIR_OS "$@"
