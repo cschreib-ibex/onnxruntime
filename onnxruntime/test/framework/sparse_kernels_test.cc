@@ -21,6 +21,10 @@
 #include "gtest/gtest.h"
 #include "gmock/gmock.h"
 
+#include "core/util/math_cpuonly.h"
+#include <Eigen/SparseCore>
+
+
 using namespace ONNX_NAMESPACE;
 using namespace onnxruntime::common;
 
@@ -1209,6 +1213,19 @@ TEST(SparseTensorConversionTests, TestDenseToSparseConversion) {
 }
 
 #endif  // !ORT_MINIMAL_BUILD
+
+template <class T>
+using SparseMatrixRow = Eigen::SparseMatrix<T, Eigen::RowMajor>;
+
+//nnz: 2
+//Storage type size is: 4
+TEST(SparseTensorConversionTests, IndexSizeTest) {
+  std::vector<float> data = {0.f, 3.f, 5.f};
+  ConstEigenMatrixMapRowMajor<float> dense_map(data.data(), 1, 3);
+  SparseMatrixRow<float> sparse_matrix = dense_map.sparseView();
+  std::cout << "nnz: " << sparse_matrix.nonZeros() << std::endl;
+  std::cout << "Storage type size is: " << sizeof(*sparse_matrix.innerIndexPtr()) << std::endl;
+}
 
 }  // namespace test
 }  // namespace onnxruntime
